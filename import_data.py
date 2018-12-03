@@ -2,6 +2,7 @@ import argparse
 import pymongo
 import sys
 
+import settings
 from data_browser import DataBrowser
 
 
@@ -15,8 +16,8 @@ def main():
         '--drop-collection', action='store_true', default=False,
         help='drop Documents collection in the database before importing')
     args = parser.parse_args()
-    mongo_con = pymongo.MongoClient()
-    mongo_db = mongo_con['reuters_data']
+    mongo_con = pymongo.MongoClient(settings.MONGO_HOST)
+    mongo_db = mongo_con[settings.MONGO_DBNAME]
     if args.drop_collection and 'documents' in mongo_db.list_collection_names():
         print('dropping existing Documents collection')
         mongo_db.drop_collection('documents')

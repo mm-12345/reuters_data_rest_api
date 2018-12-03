@@ -1,6 +1,7 @@
 from bson.son import SON
 
-MONGO_URI = "mongodb://127.0.0.1:27017/reuters_data"
+MONGO_HOST = '127.0.0.1'
+MONGO_DBNAME = 'reuters_data'
 
 RESOURCE_METHODS = ['GET']
 ITEM_METHODS = ['GET']
