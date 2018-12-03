@@ -5,6 +5,7 @@ import sys
 import settings
 from data_browser import DataBrowser
 
+DOCS_COLLECTION_NAME = 'documents'
 
 def main():
     parser = argparse.ArgumentParser(
@@ -18,9 +19,10 @@ def main():
     args = parser.parse_args()
     mongo_con = pymongo.MongoClient(settings.MONGO_HOST)
     mongo_db = mongo_con[settings.MONGO_DBNAME]
-    if args.drop_collection and 'documents' in mongo_db.list_collection_names():
-        print('dropping existing Documents collection')
-        mongo_db.drop_collection('documents')
+    if args.drop_collection and \
+            DOCS_COLLECTION_NAME in mongo_db.list_collection_names():
+        print('dropping existing %s collection' % DOCS_COLLECTION_NAME)
+        mongo_db.drop_collection(DOCS_COLLECTION_NAME)
     for filename in sorted(args.paths):
         print('importing data from ' + filename)
         data = DataBrowser(filename)
@@ -31,6 +33,11 @@ def main():
                 'error parsing data file (%s): %s' % (filename, exc),
                 file=sys.stderr)
         mongo_db.documents.insert_many(_.as_dict() for _ in docs)
+    # creating full text search index
+    mongo_db[DOCS_COLLECTION_NAME].create_index(
+        [('text.title', pymongo.TEXT), ('text.body', pymongo.TEXT)],
+        name='search_index_for_text_title_and_body',
+        default_language='english')
 
 if __name__ == '__main__':
     main()

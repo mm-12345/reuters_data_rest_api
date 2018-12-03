@@ -123,7 +123,7 @@ DOMAIN = {
             'source': 'documents',
             'aggregation': {
                 'pipeline': [
-                    {"$match": {"text.author": { "$exists": True, "$ne": None}}},
+                    {"$match": {"text.author": {"$exists": True, "$ne": None}}},
                     {"$group": {"_id": "$text.author"}},
                     {"$sort": SON([("_id", 1)])}
                 ]
