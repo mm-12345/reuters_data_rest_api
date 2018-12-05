@@ -11,7 +11,7 @@ def data():
     return DataBrowser('./test_data/test.sgm')
 
 
-class TestDocument(object):
+class TestDocument():
     def test_as_dict(self, data):
         for doc in data.documents:
             assert isinstance(doc.as_dict(), dict)
